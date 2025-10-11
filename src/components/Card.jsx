@@ -1,30 +1,34 @@
-import React from 'react'
+import { useEffect , useState } from 'react';
+import { Loader } from 'rsuite';
 
 export const Card = ({Titulo, Icono, Monto }) => {
 
-    const formatMonto = (monto) => {
-        if ( monto == null) return null 
-        if (typeof monto === 'number') {
-            return `S/. ${new Intl.NumberFormat('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(monto)}`
-        }
+const [Loading, setLoading] = useState(true);
 
-    
-    }
-
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      // Simula una carga de 0.5 segundos
+    }, 500);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
-    <div>
-        <div className='bg-white p-5 rounded-lg shadow-md flex items-center gap-5'>
+    <div className='w-[20rem] '>
+        
+        <div className='bg-white p-5 rounded-xl border-1 border-neutral-300 shadow-sm flex items-center gap-5 min-h-[10rem]'>
             <div className='text-3xl text-neutral-400'>
                 {Icono}
             </div>
-            <div>
-                <div className='text-sm text-neutral-500'>
+            <div className='flex flex-col '>
+                <div className='text-md text-neutral-500'>
                     {Titulo}
                 </div>
                 <div className='text-2xl font-bold'>
-                    {formatMonto(Monto)}
+                    {Monto}
                 </div>
+            </div>
+            <div>
+                {Loading ? <Loader/> : <div>Datos cargados</div>}
             </div>
         </div>
     </div>

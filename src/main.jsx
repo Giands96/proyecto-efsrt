@@ -8,12 +8,12 @@ import Productos from './pages/Productos'
 import Ventas from './pages/Ventas'
 import Categorias from './pages/Categorias'
 import Reportes from './pages/Reportes'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <Navigate to="/dashboard" replace />,
   },
   {
     path: "/dashboard",
