@@ -39,7 +39,7 @@ export default function DataTable({ title, columns, data, datosCompletos, rowsPe
 
 
   return (
-    <div className="bg-white rounded-2xl shadow-md p-6 mt-6">
+    <div className="bg-white rounded-2xl shadow-md p-6 mt-6 container mx-auto">
       <h2 className="text-2xl font-semibold mb-4 text-gray-700">{title}</h2>
       <div className="overflow-x-auto rounded-lg border border-gray-100">
         <table className="min-w-full divide-y divide-gray-200 text-sm">
@@ -105,7 +105,7 @@ export default function DataTable({ title, columns, data, datosCompletos, rowsPe
             {datosPagina.length === 0 && (
               <tr>
                 <td colSpan={columns.length} className="px-6 py-4 text-center text-gray-500">
-                  No hay datos.
+                  <span class="loader"></span>
                 </td>
               </tr>
             )}

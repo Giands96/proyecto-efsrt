@@ -3,6 +3,7 @@ import { Navbar } from '../components/Navbar'
 import { Card } from '../components/Card'
 import { Loader } from 'rsuite';
 import { createClient } from '@supabase/supabase-js'
+import { Graficos } from "../components/Graficos"
 
 const supabase = createClient(
   "https://lhluvsgwylxmmfzfdojd.supabase.co",
@@ -10,6 +11,7 @@ const supabase = createClient(
 )
 
 const Dashboard = () => {
+  const [Loading, setLoading] = useState(true);
   const [resumen, setResumen] = useState({
     totalVentas: 0,
     totalClientes: 0,
@@ -49,12 +51,29 @@ const Dashboard = () => {
 
   )
 
- 
-
+ const [ventasMensuales, setVentasMensuales] = useState([])
   useEffect(() => {
     const fetchResumen = async () => {
       try {
       
+        const { data: ventasData, error: ventasError2 } = await supabase
+          .from("venta")
+          .select("total, fecha")
+
+        if (ventasError2) throw ventasError
+
+        const resumenMensual = {}
+        ventasData.forEach((venta) => {
+          const mes = new Date(venta.fecha).toLocaleString("es-ES", { month: "long" })
+          resumenMensual[mes] = (resumenMensual[mes] || 0) + venta.total
+        })
+
+        const ventasResultado = Object.entries(resumenMensual).map(([mes, ventas]) => ({
+          name: mes.charAt(0).toUpperCase() + mes.slice(1),
+          ventas,
+        }))
+        setVentasMensuales(ventasResultado)
+
         const { data: ventas, error: ventasError } = await supabase
           .from('venta')
           .select('total')
@@ -96,16 +115,16 @@ const Dashboard = () => {
     }
 
     fetchResumen()
+    
   }, [])
 
   return (
     <div>
       <Navbar />
-      <div className="p-10">
+      <div className="p-10 container mx-auto">
         <div>
-          <h1 className="text-3xl font-bold mb-10">Dashboard de Ventas</h1>
+          <h1 className="text-3xl font-bold mb-10">Dashboard</h1>
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           <Card
             Icono={iconoVentas}
@@ -129,8 +148,11 @@ const Dashboard = () => {
           />
         </div>
       </div>
-      <div>
-        <Loader/>
+      <div className='px-10  container mx-auto'>
+        <h2 className='text-xl font-semibold my-4'>Graficos de Ventas</h2>
+        <div className='bg-neutral-50 border-1 rounded-xl border-neutral-400  p-5'>
+          <Graficos data={ventasMensuales}/>
+        </div>
       </div>
     </div>
   )
