@@ -8,7 +8,7 @@ const [Loading, setLoading] = useState(true);
     const timer = setTimeout(() => {
       
       setLoading(false);
-    }, 1200);
+    }, 1400);
     return () => clearTimeout(timer);
   }, []);
 
