@@ -16,7 +16,7 @@ export default function Clientes() {
 
   
 
-  // 🔹 Obtener clientes
+  //  Obtener clientes
   const fetchClientes = async () => {
     const { data, error } = await supabase
       .from("cliente")
@@ -28,14 +28,14 @@ export default function Clientes() {
     } else {
       const formateados = data.map((c) => ({
         id_cliente: c.id_cliente,
-        id: c.id_cliente, // Para que DataTable pueda identificar el ID
+        id: c.id_cliente,
         nombre: c.nombre,
         dni: c.dni,
-        teléfono: c.telefono, // ✅ Con acento para coincidir con la columna
-        telefono: c.telefono, // ✅ También sin acento por si acaso
+        teléfono: c.telefono, 
+        telefono: c.telefono, 
         correo: c.correo,
         estado: c.estado ? "Activo" : "Desactivado",
-        estadoBoolean: c.estado // ✅ Guardar el valor boolean original
+        estadoBoolean: c.estado 
       }));
       setClientes(formateados);
     }

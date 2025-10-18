@@ -3,6 +3,7 @@ import { supabase } from "../backend/supabaseClient";
 import DataTable from "../components/DataTable";
 import { Navbar } from "../components/Navbar";
 import { X, Info, Eye } from "lucide-react";
+import { useMemo } from "react";
 
 const columns = ["ID", "Cliente", "Fecha", "Total", "Método de Pago", "Observaciones", "Acciones"];
 
@@ -12,6 +13,24 @@ export default function Ventas() {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [productos, setProductos] = useState([]);
   const [cargandoDetalle, setCargandoDetalle] = useState(false);
+  const [paginaActual, setPaginaActual] = useState(1);
+  const elementsPerPage = 10;
+
+  const datosPaginados = useMemo(() => {
+    const indiceInicial = (paginaActual-1) * elementsPerPage;
+    const indiceFinal = indiceInicial + elementsPerPage;
+    return ventas.slice(indiceInicial, indiceFinal);
+  },[ventas, paginaActual, elementsPerPage])
+
+  const totalPaginas = Math.ceil(ventas.length/elementsPerPage)
+
+   const irAPagina = (numero) => {
+    setPaginaActual(Math.max(1, Math.min(totalPaginas, numero)));
+  };
+
+  const irAPaginaSiguiente = () => irAPagina(paginaActual + 1);
+  const irAPaginaAnterior = () => irAPagina(paginaActual - 1);
+
 
   const verDetalleVenta = async (venta) => {
     console.log("Venta seleccionada:", venta);
@@ -163,10 +182,76 @@ export default function Ventas() {
           </table>
 
           <div className="bg-gray-50 px-6 py-3 flex items-center justify-between border-t border-gray-200">
-            <div className="text-sm text-gray-700">
-              Mostrando 1-{ventas.length} de {ventas.length}
-            </div>
-          </div>
+  <div className="text-sm text-gray-700">
+    Mostrando {((paginaActual - 1) * elementsPerPage) + 1}-
+    {Math.min(paginaActual * elementsPerPage, ventas.length)} de {ventas.length}
+  </div>
+  
+  <div className="flex items-center gap-2">
+    <button
+      onClick={() => irAPagina(1)}
+      disabled={paginaActual === 1}
+      className={`p-2 rounded ${
+        paginaActual === 1 
+          ? 'text-gray-300 cursor-not-allowed' 
+          : 'text-gray-600 hover:bg-gray-100'
+      }`}
+    >
+      «
+    </button>
+    
+    <button
+      onClick={irAPaginaAnterior}
+      disabled={paginaActual === 1}
+      className={`p-2 rounded ${
+        paginaActual === 1 
+          ? 'text-gray-300 cursor-not-allowed' 
+          : 'text-gray-600 hover:bg-gray-100'
+      }`}
+    >
+      ‹
+    </button>
+
+    {/* Botones de página */}
+    {[...Array(totalPaginas)].map((_, i) => (
+      <button
+        key={i + 1}
+        onClick={() => irAPagina(i + 1)}
+        className={`px-3 py-1 rounded ${
+          paginaActual === i + 1
+            ? 'bg-blue-500 text-white'
+            : 'text-gray-600 hover:bg-gray-100'
+        }`}
+      >
+        {i + 1}
+      </button>
+    ))}
+
+    <button
+      onClick={irAPaginaSiguiente}
+      disabled={paginaActual === totalPaginas}
+      className={`p-2 rounded ${
+        paginaActual === totalPaginas
+          ? 'text-gray-300 cursor-not-allowed'
+          : 'text-gray-600 hover:bg-gray-100'
+      }`}
+    >
+      ›
+    </button>
+    
+    <button
+      onClick={() => irAPagina(totalPaginas)}
+      disabled={paginaActual === totalPaginas}
+      className={`p-2 rounded ${
+        paginaActual === totalPaginas
+          ? 'text-gray-300 cursor-not-allowed'
+          : 'text-gray-600 hover:bg-gray-100'
+      }`}
+    >
+      »
+    </button>
+  </div>
+</div>
         </div>
       </div>
 
