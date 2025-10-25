@@ -3,7 +3,7 @@ import { Navbar } from "../components/Navbar";
 import {useState, useEffect} from "react"
 import { supabase } from "../backend/supabaseClient";
 
-const columns = ["ID", "Nombre", "Descripción"];
+const columns = ["ID", "Nombre", "Descripcion"];
 
 export default function Categorias() {
   const [categorias, setCategorias] = useState([]);
